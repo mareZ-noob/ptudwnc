@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/films")
 @Tag(
@@ -182,6 +184,7 @@ public class FilmController {
     }
 
     private Film mapToFilm(FilmRequestVm filmRequestVm, Film film) {
+        log.info("Map FilmRequestVm {} to Film entity", filmRequestVm);
         film.setTitle(filmRequestVm.getTitle());
         film.setDescription(filmRequestVm.getDescription());
         film.setReleaseYear(filmRequestVm.getReleaseYear());
@@ -201,7 +204,9 @@ public class FilmController {
             Language origLang = languageRepository.findById(filmRequestVm.getOriginalLanguageId())
                     .orElseThrow(() -> new ResourceNotFoundException("Original language not found with id: " + filmRequestVm.getOriginalLanguageId()));
             film.setOriginalLanguage(origLang);
+            log.info("Set originalLanguage to language with ID: {}", filmRequestVm.getOriginalLanguageId());
         } else {
+            log.info("Original language ID is null, setting originalLanguage to null");
             film.setOriginalLanguage(null);
         }
 
@@ -209,6 +214,7 @@ public class FilmController {
     }
 
     private FilmRequestVm mapToFilmRequestVm(Film film) {
+        log.info("Map Film entity {} to FilmRequestVm", film);
         return FilmRequestVm.builder()
                 .title(film.getTitle())
                 .description(film.getDescription())

@@ -5,6 +5,7 @@ networks:
 services:
   mysql:
     image: mysql:8.0
+    container_name: mysql
     volumes:
       - ./init:/docker-entrypoint-initdb.d
     environment:
